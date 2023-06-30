@@ -1,6 +1,7 @@
 package com.abner.vendasapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import com.abner.vendasapi.model.repository.ProdutoRepository;
 
 @RestController
 @RequestMapping("/api/produtos")
+@CrossOrigin("*")
 public class ProdutoController {
 
 	@Autowired
@@ -19,9 +21,9 @@ public class ProdutoController {
 
 	@PostMapping
 	public ProdutoDTO salvar(@RequestBody ProdutoDTO dto) {
-		Produto produto = new Produto(dto.getNome(), dto.getDescricao(), dto.getPreco(), dto.getSku());
+		Produto produto = dto.toModel();
 		produtoRepository.save(produto);
-		return dto;
+		return ProdutoDTO.fromModel(produto);
 	}
 
 }
