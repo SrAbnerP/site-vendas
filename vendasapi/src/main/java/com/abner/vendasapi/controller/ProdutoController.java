@@ -40,6 +40,7 @@ public class ProdutoController {
 		}
 
 		Produto produto = dto.toModel();
+		produto.setDataCadastro(p.get().getDataCadastro());
 		produto.setId(id);
 		produtoRepository.save(produto);
 

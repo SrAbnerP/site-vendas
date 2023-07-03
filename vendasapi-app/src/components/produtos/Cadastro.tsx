@@ -6,8 +6,19 @@ import { useProdutoService } from "@/services/produtoService";
 import { Produto } from "@/models/produto";
 import { converterBigDecimal } from "@/util/Money";
 import { mensagemErro, mensagemSucesso } from "../common/Toastr";
+import * as yup from "yup";
 
 import "toastr/build/toastr.css";
+
+const validarSchema = yup.object().shape({
+  descricao: yup.string().trim().required("Descricao Inválida!"),
+  nome: yup.string().trim().required("Nome Inválido!"),
+  preco: yup
+    .number()
+    .required("Preço Inválido!")
+    .moreThan(0, "O Preço deve ser maior que zero!"),
+  sku: yup.string().trim().required("SKU Inválido!"),
+});
 
 export default function CadastroProdutos(props: any) {
   const produtoService = useProdutoService();
@@ -26,17 +37,24 @@ export default function CadastroProdutos(props: any) {
       nome,
       descricao,
     };
-    if (id) {
-      produtoService.atualizar(produto).then((response) => {
-        mensagemSucesso("Produto salvo com sucesso!");
+    validarSchema
+      .validate(produto)
+      .then((obj) => {
+        if (id) {
+          produtoService.atualizar(produto).then((response) => {
+            mensagemSucesso("Produto salvo com sucesso!");
+          });
+        } else {
+          produtoService.salvar(produto).then((response) => {
+            mensagemSucesso("Produto salvo com sucesso!");
+            setId(response.id ?? "");
+            setCadastro(response.cadastro ?? "");
+          });
+        }
+      })
+      .catch((err) => {
+        mensagemErro(err.message);
       });
-    } else {
-      produtoService.salvar(produto).then((response) => {
-        mensagemSucesso("Produto salvo com sucesso!");
-        setId(response.id ?? "");
-        setCadastro(response.cadastro ?? "");
-      });
-    }
   };
 
   return (
