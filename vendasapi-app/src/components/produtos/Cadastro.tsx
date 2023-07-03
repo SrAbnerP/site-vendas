@@ -4,6 +4,10 @@ import Layout from "../layout/Layout";
 import Input from "../common/Input";
 import { useProdutoService } from "@/services/produtoService";
 import { Produto } from "@/models/produto";
+import { converterBigDecimal } from "@/util/Money";
+import { mensagemErro, mensagemSucesso } from "../common/Toastr";
+
+import "toastr/build/toastr.css";
 
 export default function CadastroProdutos(props: any) {
   const produtoService = useProdutoService();
@@ -18,16 +22,17 @@ export default function CadastroProdutos(props: any) {
     const produto: Produto = {
       id,
       sku,
-      preco: parseFloat(preco),
+      preco: converterBigDecimal(preco),
       nome,
       descricao,
     };
     if (id) {
       produtoService.atualizar(produto).then((response) => {
-        console.log("atualizado!");
+        mensagemSucesso("Produto salvo com sucesso!");
       });
     } else {
       produtoService.salvar(produto).then((response) => {
+        mensagemSucesso("Produto salvo com sucesso!");
         setId(response.id ?? "");
         setCadastro(response.cadastro ?? "");
       });
@@ -78,6 +83,7 @@ export default function CadastroProdutos(props: any) {
           onChange={setPreco}
           value={preco}
           placeholder="Digite o Preço do produto"
+          currency
         />
       </div>
 

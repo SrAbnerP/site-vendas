@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import Menu from "./menu/Menu";
+import { Message } from "@/util/Message";
 
 interface LayoutProps {
   titulo?: string;

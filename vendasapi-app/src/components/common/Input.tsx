@@ -1,3 +1,5 @@
+import { formatReal } from "../../util/Money";
+
 interface InputProps {
   onChange?: (value: any) => void;
   label: string;
@@ -5,7 +7,8 @@ interface InputProps {
   id: string;
   placeholder?: string;
   value?: any;
-  disabled?: any
+  disabled?: any;
+  currency?: boolean;
 }
 
 export default function Input({
@@ -15,8 +18,20 @@ export default function Input({
   id,
   placeholder,
   value,
-  disabled
+  disabled,
+  currency,
 }: InputProps) {
+  const onInputChange = (e: any) => {
+    if (onChange) {
+      let value = e.target.value;
+      if (value && currency) {
+        value = formatReal(value);
+      }
+
+      onChange(value);
+    }
+  };
+
   return (
     <div className={`field column ${columnClasses}`}>
       <label className="label" htmlFor={id}>
@@ -27,11 +42,7 @@ export default function Input({
           id={id}
           disabled={disabled}
           value={value}
-          onChange={(e) => {
-            if (onChange) {
-              onChange(e.target.value);
-            }
-          }}
+          onChange={onInputChange}
           type="text"
           className="input"
           placeholder={placeholder}
