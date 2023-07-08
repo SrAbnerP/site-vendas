@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import Menu from "./menu/Menu";
+import Menu from "./Menu";
 import { Message } from "@/util/Message";
 
 interface LayoutProps {

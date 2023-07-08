@@ -9,6 +9,7 @@ import { mensagemErro, mensagemSucesso } from "../common/Toastr";
 import * as yup from "yup";
 
 import "toastr/build/toastr.css";
+import Link from "next/link";
 
 const validarSchema = yup.object().shape({
   descricao: yup.string().trim().required("Descricao Inválida!"),
@@ -143,7 +144,9 @@ export default function CadastroProdutos(props: any) {
           </button>
         </div>
         <div className="control">
-          <button className="button is-danger">Voltar</button>
+          <Link href="/consultas/produtos">
+            <button className="button is-danger">Voltar</button>
+          </Link>
         </div>
       </div>
     </Layout>
