@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 
 import "../styles/globals.css";
 import "bulma/css/bulma.css";
+import "../styles/loader.css";
 
 const inter = Inter({ subsets: ["latin"] });
 

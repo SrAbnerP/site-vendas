@@ -6,6 +6,7 @@ import { Produto } from "@/models/produto";
 import useSWR from "swr";
 import { httpClient } from "@/services/http/httpClient";
 import { AxiosResponse } from "axios";
+import { Loader } from "../common/Loader";
 
 export default function ListagemProdutos() {
   const { data: result, error } = useSWR<AxiosResponse<Produto[]>>(
@@ -13,17 +14,14 @@ export default function ListagemProdutos() {
     (url) => httpClient.get(url)
   );
 
-  if (!result) {
-    return <div>Carregando...</div>;
-  }
-
   return (
     <Layout titulo="Produtos">
       <Link href="/cadastros/produtos">
         <button className="button is-warning">Novo</button>
       </Link>
       <br />
-      <TabelaProdutos produtos={result.data} />
+      <Loader show={!result} />
+      <TabelaProdutos produtos={result?.data || []} />
     </Layout>
   );
 }
