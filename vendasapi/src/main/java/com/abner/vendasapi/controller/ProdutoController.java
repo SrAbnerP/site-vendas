@@ -32,6 +32,17 @@ public class ProdutoController {
 		return produtoRepository.findAll().stream().map(p -> ProdutoDTO.fromModel(p)).collect(Collectors.toList());
 	}
 
+	@GetMapping("{id}")
+	public ResponseEntity<ProdutoDTO> getById(@PathVariable("id") Long id) {
+		Optional<Produto> produto = produtoRepository.findById(id);
+		if (produto.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		var produtoDTO = produto.map(p -> ProdutoDTO.fromModel(p)).get();
+		return ResponseEntity.ok(produtoDTO);
+	}
+
 	@PostMapping
 	public ProdutoDTO salvar(@RequestBody ProdutoDTO dto) {
 		Produto produto = dto.toModel();

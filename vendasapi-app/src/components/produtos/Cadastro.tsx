@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../layout/Layout";
 import Input from "../common/Input";
 import { useProdutoService } from "@/services/produtoService";
 import { Produto } from "@/models/produto";
-import { converterBigDecimal } from "@/util/Money";
+import { converterBigDecimal, formatReal } from "@/util/Money";
 import { mensagemErro, mensagemSucesso } from "../common/Toastr";
+import { useSearchParams } from "next/navigation";
+
 import * as yup from "yup";
 
 import "toastr/build/toastr.css";
@@ -21,7 +23,8 @@ const validarSchema = yup.object().shape({
   sku: yup.string().trim().required("SKU Inválido!"),
 });
 
-export default function CadastroProdutos(props: any) {
+export default function CadastroProdutos() {
+  const searchParams = useSearchParams();
   const produtoService = useProdutoService();
   const [sku, setSku] = useState<string>("");
   const [preco, setPreco] = useState<string>("");
@@ -29,6 +32,21 @@ export default function CadastroProdutos(props: any) {
   const [descricao, setDescricao] = useState<string>("");
   const [id, setId] = useState<string>("");
   const [cadastro, setCadastro] = useState<string>("");
+
+  const queryId = searchParams.get("id");
+
+  useEffect(() => {
+    produtoService.carregarProduto(queryId).then((produtoEncontrado) => {
+      if (queryId) {
+        setId(produtoEncontrado.id || "");
+        setSku(produtoEncontrado.sku || "");
+        setCadastro(produtoEncontrado.cadastro || "");
+        setNome(produtoEncontrado.nome || "");
+        setDescricao(produtoEncontrado.descricao || "");
+        setPreco(formatReal(`${produtoEncontrado.preco}`) || "");
+      }
+    });
+  }, [queryId]);
 
   const submit = () => {
     const produto: Produto = {
