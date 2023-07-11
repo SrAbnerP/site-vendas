@@ -4,7 +4,7 @@ import { table } from "console";
 import React from "react";
 
 interface TabelaProdutosProps {
-  produtos: Array<Produto>;
+  produtos?: Array<Produto>;
   onEdit: (produto: any) => void;
   onDelete: (produto: any) => void;
 }
@@ -26,7 +26,7 @@ export const TabelaProdutos: React.FC<TabelaProdutosProps> = ({
         </tr>
       </thead>
       <tbody>
-        {produtos.map((produto) => (
+        {produtos?.map((produto) => (
           <ProdutoRow
             onDelete={onDelete}
             onEdit={onEdit}
