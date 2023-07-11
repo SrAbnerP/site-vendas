@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Layout from "../layout/Layout";
-import Input from "../common/Input";
+import { Input } from "../common/Input";
 import { useProdutoService } from "@/services/produtoService";
 import { Produto } from "@/models/produto";
 import { converterBigDecimal, formatReal } from "@/util/Money";
@@ -77,94 +77,63 @@ export default function CadastroProdutos() {
   };
 
   return (
-    <Layout titulo="Cadastro de Produtos">
-      {id && (
-        <div className="columns">
-          {/* Codigo */}
-          <Input
-            label="Código: *"
-            id="inputId"
-            columnClasses="is-half"
-            value={id}
-            disabled
-          />
-
-          {/* Data Cadastro */}
-          <Input
-            label="Data Cadastro: *"
-            id="inputCadastro"
-            columnClasses="is-half"
-            value={cadastro}
-            disabled
-          />
-        </div>
-      )}
-
-      {/* divide em coluna */}
+    <Layout titulo="Produtos">
       <div className="columns">
-        {/* SKU */}
         <Input
           label="SKU: *"
-          id="inputSKU"
           columnClasses="is-half"
           onChange={setSku}
           value={sku}
+          id="inputSku"
           placeholder="Digite o SKU do produto"
         />
 
-        {/* Preco */}
         <Input
           label="Preço: *"
-          id="inputPreco"
           columnClasses="is-half"
           onChange={setPreco}
           value={preco}
+          id="inputPreco"
           placeholder="Digite o Preço do produto"
-          currency
         />
       </div>
 
-      {/* Nome */}
       <div className="columns">
         <Input
           label="Nome: *"
-          id="inputNome"
           columnClasses="is-full"
           onChange={setNome}
           value={nome}
+          id="inputNome"
           placeholder="Digite o Nome do produto"
         />
       </div>
 
-      {/* Descricao */}
       <div className="columns">
         <div className="field column is-full">
-          <label className="label" htmlFor="inputDescricao">
+          <label className="label" htmlFor="inputDesc">
             Descrição: *
           </label>
           <div className="control">
             <textarea
-              id="inputDescricao"
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
               className="textarea"
+              id="inputDesc"
+              value={descricao}
+              onChange={(event) => setDescricao(event.target.value)}
               placeholder="Digite a Descrição detalhada do produto"
             />
           </div>
         </div>
       </div>
 
-      {/* botoes de salvar e voltar */}
       <div className="field is-grouped">
-        <div className="control">
-          <button className="button is-primary" onClick={submit}>
-            {id ? "Atualizar" : "Salvar"}
+        <div className="control is-link">
+          <button onClick={submit} className="button is-success">
+            Salvar
           </button>
         </div>
         <div className="control">
-          <Link href="/consultas/produtos">
-            <button className="button is-danger">Voltar</button>
-          </Link>
+          <button className="button is-danger">Voltar</button>
         </div>
       </div>
     </Layout>

@@ -1,7 +1,7 @@
 import { Cliente } from "@/models/cliente";
 import { useFormik } from "formik";
 import React from "react";
-import Input from "../common/Input";
+import { Input } from "../common/Input";
 
 interface ClienteFormProps {
   cliente: Cliente;
@@ -33,15 +33,19 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
         <div className="columns">
           <Input
             id="id"
+            name="id"
             label="Código: "
             disabled={true}
             columnClasses="is-half"
+            autoComplete="off"
             value={formik.values.id}
           />
           <Input
             id="cadastro"
+            name="cadastro"
             label="Data de Cadastro: *"
             columnClasses="is-half"
+            autoComplete="off"
             disabled={true}
             value={formik.values.cadastro}
           />
@@ -51,8 +55,10 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
       <div className="columns">
         <Input
           id="nome"
+          name="nome"
           label="Nome: *"
           columnClasses="is-full"
+          autoComplete="off"
           onChange={formik.handleChange}
           value={formik.values.nome}
         />
@@ -60,15 +66,19 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
       <div className="columns">
         <Input
           id="cpf"
+          name="cpf"
           label="CPF: *"
           columnClasses="is-half"
+          autoComplete="off"
           onChange={formik.handleChange}
           value={formik.values.cpf}
         />
         <Input
           id="dataNascimento"
+          name="dataNascimento"
           label="Data de Nascimento: *"
           columnClasses="is-half"
+          autoComplete="off"
           onChange={formik.handleChange}
           value={formik.values.dataNascimento}
         />
@@ -76,8 +86,10 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
       <div className="columns">
         <Input
           id="endereco"
+          name="endereco"
           label="Endereço: *"
           columnClasses="is-full"
+          autoComplete="off"
           onChange={formik.handleChange}
           value={formik.values.endereco}
         />
@@ -85,15 +97,19 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
       <div className="columns">
         <Input
           id="email"
+          name="email"
           label="Email: *"
           columnClasses="is-half"
+          autoComplete="off"
           onChange={formik.handleChange}
           value={formik.values.email}
         />
         <Input
           id="telefone"
+          name="telefone"
           label="Telefone: *"
           columnClasses="is-half"
+          autoComplete="off"
           onChange={formik.handleChange}
           value={formik.values.telefone}
         />
