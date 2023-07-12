@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../layout/Layout";
-import { Input } from "../common/Input";
+import { Input, InputMoney } from "../common/Input";
 import { useProdutoService } from "@/services/produtoService";
 import { Produto } from "@/models/produto";
 import { converterBigDecimal, formatReal } from "@/util/Money";
@@ -78,20 +78,39 @@ export default function CadastroProdutos() {
 
   return (
     <Layout titulo="Produtos">
+      {id && (
+        <div className="columns">
+          <Input
+            label="Código:"
+            columnClasses="is-half"
+            value={id}
+            id="inputId"
+            disabled={true}
+          />
+
+          <Input
+            label="Data Cadastro:"
+            columnClasses="is-half"
+            value={cadastro}
+            id="inputDataCadastro"
+            disabled
+          />
+        </div>
+      )}
       <div className="columns">
         <Input
           label="SKU: *"
           columnClasses="is-half"
-          onChange={setSku}
+          onChange={(e) => setSku(e.target.value)}
           value={sku}
           id="inputSku"
           placeholder="Digite o SKU do produto"
         />
 
-        <Input
+        <InputMoney
           label="Preço: *"
           columnClasses="is-half"
-          onChange={setPreco}
+          onChange={(e) => setPreco(e.target.value)}
           value={preco}
           id="inputPreco"
           placeholder="Digite o Preço do produto"
@@ -102,7 +121,7 @@ export default function CadastroProdutos() {
         <Input
           label="Nome: *"
           columnClasses="is-full"
-          onChange={setNome}
+          onChange={(e) => setNome(e.target.value)}
           value={nome}
           id="inputNome"
           placeholder="Digite o Nome do produto"
@@ -119,7 +138,7 @@ export default function CadastroProdutos() {
               className="textarea"
               id="inputDesc"
               value={descricao}
-              onChange={(event) => setDescricao(event.target.value)}
+              onChange={(e) => setDescricao(e.target.value)}
               placeholder="Digite a Descrição detalhada do produto"
             />
           </div>
@@ -129,11 +148,13 @@ export default function CadastroProdutos() {
       <div className="field is-grouped">
         <div className="control is-link">
           <button onClick={submit} className="button is-success">
-            Salvar
+            {id ? "Atualizar" : "Salvar"}
           </button>
         </div>
         <div className="control">
-          <button className="button is-danger">Voltar</button>
+          <Link href="/consultas/produtos">
+            <button className="button is-danger">Voltar</button>
+          </Link>
         </div>
       </div>
     </Layout>
