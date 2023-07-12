@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@4us-dev/utils@^0.0.15":
+  version "0.0.15"
+  resolved "https://registry.npmjs.org/@4us-dev/utils/-/utils-0.0.15.tgz"
+  integrity sha512-orp0Afg0ZbuiRk8JCM+JyrT29CHSE6Dru+vzT+CRQlPem+UHy38cC80HTeXRY/YrhucoesuQ/JdQ6CAfgo5Uyg==
+
 "@aashutoshrathi/word-wrap@^1.2.3":
   version "1.2.6"
   resolved "https://registry.npmjs.org/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz"
