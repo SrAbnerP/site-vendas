@@ -1,7 +1,11 @@
 import { Cliente } from "@/models/cliente";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import { Input, InputCpf, InputDate, InputTelefone } from "../common/Input";
+
+import * as Yup from "yup";
+import { mensagemErro } from "../common/Toastr";
+import { validationScheme } from "./validationSchema";
 
 interface ClienteFormProps {
   cliente: Cliente;
@@ -27,7 +31,9 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
     initialValues: { ...formScheme, ...cliente },
     onSubmit,
     enableReinitialize: true,
+    validationSchema: validationScheme,
   });
+
   return (
     <form onSubmit={formik.handleSubmit}>
       {formik.values.id && (
@@ -54,6 +60,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
       )}
 
       <div className="columns">
+        {formik.errors.nome && <div>{formik.errors.nome}</div>}
         <Input
           id="nome"
           name="nome"
@@ -65,6 +72,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
         />
       </div>
       <div className="columns">
+        {formik.errors.cpf && <div>{formik.errors.cpf}</div>}
         <InputCpf
           id="cpf"
           name="cpf"
@@ -74,6 +82,8 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
           onChange={formik.handleChange}
           value={formik.values.cpf}
         />
+
+        {formik.errors.nascimento && <div>{formik.errors.nascimento}</div>}
         <InputDate
           id="nascimento"
           name="nascimento"
@@ -85,6 +95,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
         />
       </div>
       <div className="columns">
+        {formik.errors.endereco && <div>{formik.errors.endereco}</div>}
         <Input
           id="endereco"
           name="endereco"
@@ -96,6 +107,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
         />
       </div>
       <div className="columns">
+        {formik.errors.email && <div>{formik.errors.email}</div>}
         <Input
           id="email"
           name="email"
@@ -105,6 +117,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
           onChange={formik.handleChange}
           value={formik.values.email}
         />
+        {formik.errors.telefone && <div>{formik.errors.telefone}</div>}
         <InputTelefone
           id="telefone"
           name="telefone"

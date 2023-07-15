@@ -24,6 +24,7 @@ export default function CadastroCliente(props: any) {
       });
     }
   };
+
   return (
     <Layout titulo="Clientes">
       <ClienteForm cliente={cliente} onSubmit={handleSubmit} />
