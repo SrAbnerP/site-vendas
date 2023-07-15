@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,6 +20,7 @@ public class Cliente {
 	private LocalDate dataNascimento;
 	private String cpf;
 	private String nome;
+	private String endereco;
 	private String telefone;
 	private String email;
 
@@ -29,27 +31,34 @@ public class Cliente {
 		super();
 	}
 
-	public Cliente(Long id, LocalDate dataNascimento, String cpf, String nome, String telefone, String email,
-			LocalDate dataCadastro) {
+	public Cliente(Long id, LocalDate dataNascimento, String cpf, String nome, String endereco, String telefone,
+			String email, LocalDate dataCadastro) {
 		super();
 		this.id = id;
 		this.dataNascimento = dataNascimento;
 		this.cpf = cpf;
 		this.nome = nome;
+		this.endereco = endereco;
 		this.telefone = telefone;
 		this.email = email;
 		this.dataCadastro = dataCadastro;
 	}
 
-	public Cliente(LocalDate dataNascimento, String cpf, String nome, String telefone, String email,
+	public Cliente(LocalDate dataNascimento, String cpf, String nome, String endereco, String telefone, String email,
 			LocalDate dataCadastro) {
 		super();
 		this.dataNascimento = dataNascimento;
 		this.cpf = cpf;
 		this.nome = nome;
+		this.endereco = endereco;
 		this.telefone = telefone;
 		this.email = email;
 		this.dataCadastro = dataCadastro;
+	}
+
+	@PrePersist
+	public void prePersist() {
+		setDataCadastro(LocalDate.now());
 	}
 
 	public Long getId() {
@@ -84,6 +93,14 @@ public class Cliente {
 		this.nome = nome;
 	}
 
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
+	}
+
 	public String getTelefone() {
 		return telefone;
 	}
@@ -111,7 +128,8 @@ public class Cliente {
 	@Override
 	public String toString() {
 		return "Cliente [id=" + id + ", dataNascimento=" + dataNascimento + ", cpf=" + cpf + ", nome=" + nome
-				+ ", telefone=" + telefone + ", email=" + email + ", dataCadastro=" + dataCadastro + "]";
+				+ ", endereco=" + endereco + ", telefone=" + telefone + ", email=" + email + ", dataCadastro="
+				+ dataCadastro + "]";
 	}
 
 }

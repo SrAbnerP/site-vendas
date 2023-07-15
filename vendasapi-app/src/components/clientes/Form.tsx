@@ -12,7 +12,7 @@ const formScheme: Cliente = {
   id: "",
   nome: "",
   cpf: "",
-  dataNascimento: "",
+  nascimento: "",
   endereco: "",
   email: "",
   telefone: "",
@@ -26,6 +26,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
   const formik = useFormik<Cliente>({
     initialValues: { ...formScheme, ...cliente },
     onSubmit,
+    enableReinitialize: true,
   });
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -74,13 +75,13 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
           value={formik.values.cpf}
         />
         <InputDate
-          id="dataNascimento"
-          name="dataNascimento"
+          id="nascimento"
+          name="nascimento"
           label="Data de Nascimento: *"
           columnClasses="is-half"
           autoComplete="off"
           onChange={formik.handleChange}
-          value={formik.values.dataNascimento}
+          value={formik.values.nascimento}
         />
       </div>
       <div className="columns">
