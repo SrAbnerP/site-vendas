@@ -1,10 +1,8 @@
 import { Cliente } from "@/models/cliente";
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import React from "react";
 import { Input, InputCpf, InputDate, InputTelefone } from "../common/Input";
 
-import * as Yup from "yup";
-import { mensagemErro } from "../common/Toastr";
 import { validationScheme } from "./validationSchema";
 
 interface ClienteFormProps {
