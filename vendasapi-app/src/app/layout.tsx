@@ -4,6 +4,11 @@ import "../styles/globals.css";
 import "bulma/css/bulma.css";
 import "../styles/loader.css";
 
+//theme
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+//core
+import "primereact/resources/primereact.min.css";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({

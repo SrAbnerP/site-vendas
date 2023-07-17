@@ -22,7 +22,7 @@ export default function ListagemClientes(props: ListagemClientesProps) {
 
   return (
     <Layout titulo="Clientes">
-      <form>
+      <form onSubmit={formik.handleSubmit}>
         <div className="columns">
           <Input
             label="Nome"
