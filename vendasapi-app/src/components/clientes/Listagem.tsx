@@ -30,7 +30,7 @@ export default function ListagemClientes(props: ListagemClientesProps) {
     content: [],
     first: 0,
     number: 0,
-    size: 10,
+    size: 5,
     totalElements: 0,
   });
 
@@ -116,6 +116,15 @@ export default function ListagemClientes(props: ListagemClientesProps) {
           <div className="control is-link">
             <button type="submit" className="button is-success">
               Consultar
+            </button>
+          </div>
+          <div className="control is-link">
+            <button
+              type="submit"
+              className="button is-danger"
+              onClick={(e) => router.push("/cadastros/clientes")}
+            >
+              Cadastrar
             </button>
           </div>
         </div>

@@ -4,6 +4,7 @@ import React from "react";
 import { Input, InputCpf, InputDate, InputTelefone } from "../common/Input";
 
 import { validationScheme } from "./validationSchema";
+import { useRouter } from "next/navigation";
 
 interface ClienteFormProps {
   cliente: Cliente;
@@ -25,6 +26,8 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
   cliente,
   onSubmit,
 }) => {
+  const router = useRouter();
+
   const formik = useFormik<Cliente>({
     initialValues: { ...formScheme, ...cliente },
     onSubmit,
@@ -130,6 +133,15 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
         <div className="control is-link">
           <button type="submit" className="button is-success">
             {formik.values.id ? "Atualizar" : "Salvar"}
+          </button>
+        </div>
+        <div className="control">
+          <button
+            type="button"
+            className="button is-danger"
+            onClick={(e) => router.push("/consultas/clientes")}
+          >
+            Voltar
           </button>
         </div>
       </div>
