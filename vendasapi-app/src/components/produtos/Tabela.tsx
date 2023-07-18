@@ -1,10 +1,11 @@
-"use client";
 import { Produto } from "@/models/produto";
-import { table } from "console";
-import React, { useState } from "react";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Button } from "primereact/button";
+import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 
 interface TabelaProdutosProps {
-  produtos?: Array<Produto>;
+  produtos: Array<Produto>;
   onEdit: (produto: any) => void;
   onDelete: (produto: any) => void;
 }
@@ -14,86 +15,48 @@ export const TabelaProdutos: React.FC<TabelaProdutosProps> = ({
   onDelete,
   onEdit,
 }) => {
-  return (
-    <table className="table is-striped is-hoverable">
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>SKU</th>
-          <th>Nome</th>
-          <th>Preço</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        {produtos?.map((produto) => (
-          <ProdutoRow
-            onDelete={onDelete}
-            onEdit={onEdit}
-            key={produto.id}
-            produto={produto}
-          />
-        ))}
-      </tbody>
-    </table>
-  );
-};
-
-interface ProdutoRowProps {
-  produto: Produto;
-  onEdit: (produto: any) => void;
-  onDelete: (produto: any) => void;
-}
-
-const ProdutoRow: React.FC<ProdutoRowProps> = ({
-  produto,
-  onDelete,
-  onEdit,
-}) => {
-  const [deletando, setDeletando] = useState<boolean>(false);
-
-  const onDeleteClick = (produto: Produto) => {
-    if (deletando) {
-      onDelete(produto);
-      setDeletando(false);
-    } else {
-      setDeletando(true);
-    }
+  const actionTemplate = (registro: Produto) => {
+    const url = `/cadastros/produtos?id=${registro.id}`;
+    return (
+      <div>
+        <ConfirmPopup />
+        <div className="flex flex-wrap gap-2">
+          <Button
+            onClick={(e) => onEdit(registro)}
+            className="p-button-rounded p-button-info"
+            icon="pi pi-check"
+            label="Editar"
+          ></Button>
+          <Button
+            onClick={(event) => {
+              confirmPopup({
+                message: "Confirma a exclusão deste registro?",
+                acceptLabel: "Sim",
+                rejectLabel: "Não",
+                accept: () => onDelete(registro),
+              });
+            }}
+            icon="pi pi-times"
+            label="Deletar"
+            className="p-button-danger p-button-outlined p-button-rounded"
+          ></Button>
+        </div>
+      </div>
+    );
   };
 
-  const cancelaDelete = () => setDeletando(false);
-
   return (
-    <tr>
-      <td>{produto.id}</td>
-      <td>{produto.sku}</td>
-      <td>{produto.nome}</td>
-      <td>{produto.preco}</td>
-      <td>
-        {!deletando && (
-          <button
-            onClick={(e) => onEdit(produto)}
-            className="button is-success is-rounded is-small"
-          >
-            Editar
-          </button>
-        )}
-
-        <button
-          onClick={(e) => onDeleteClick(produto)}
-          className="button is-danger is-rounded is-small"
-        >
-          {deletando ? "Confirma?" : "Deletar"}
-        </button>
-        {deletando && (
-          <button
-            onClick={cancelaDelete}
-            className="button is-rounded is-small"
-          >
-            Cancelar
-          </button>
-        )}
-      </td>
-    </tr>
+    <DataTable
+      value={produtos}
+      paginator
+      rows={5}
+      emptyMessage="Nenhum registro."
+    >
+      <Column field="id" header="Código" />
+      <Column field="sku" header="SKU" />
+      <Column field="nome" header="Nome" />
+      <Column field="preco" header="Preço" />
+      <Column header="" body={actionTemplate} />
+    </DataTable>
   );
 };
