@@ -7,6 +7,7 @@ import { ClienteForm } from "./Form";
 import { useClienteService } from "@/services/clienteService";
 import { mensagemSucesso } from "../common/Toastr";
 
+
 export default function CadastroCliente(props: any) {
   const clienteService = useClienteService();
   const [cliente, setCliente] = useState<Cliente>({});

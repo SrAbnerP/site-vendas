@@ -3,13 +3,17 @@ import React, { useState } from "react";
 
 import { Column } from "primereact/column";
 import { DataTable, DataTablePageEvent } from "primereact/datatable";
+import { Button } from "primereact/button";
+import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 
 import { useFormik } from "formik";
 import { Input, InputCpf } from "../common/Input";
 import Layout from "../layout/Layout";
 import { Cliente } from "@/models/cliente";
-import { Page } from "@/models/Pagina";
+import { Page } from "@/models/pagina";
 import { useClienteService } from "@/services/clienteService";
+import { useRouter } from "next/navigation";
+import { mensagemSucesso } from "../common/Toastr";
 
 interface ListagemClientesProps {
   nome?: string;
@@ -18,6 +22,7 @@ interface ListagemClientesProps {
 
 export default function ListagemClientes(props: ListagemClientesProps) {
   const clienteService = useClienteService();
+  const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -46,6 +51,43 @@ export default function ListagemClientes(props: ListagemClientesProps) {
         setClientes({ ...result, first: event?.first });
       })
       .finally(() => setLoading(false));
+  };
+
+  const deletar = (cliente: Cliente) => {
+    clienteService.deletar(cliente.id).then((result) => {
+      mensagemSucesso("Registro deletado com sucesso!");
+      handlePage(null);
+    });
+  };
+
+  const actionTemplate = (registro: Cliente) => {
+    const url = `/cadastros/clientes?id=${registro.id}`;
+    return (
+      <div>
+        <ConfirmPopup />
+        <div className="flex flex-wrap gap-2">
+          <Button
+            onClick={(e) => router.push(url)}
+            className="p-button-rounded p-button-info"
+            icon="pi pi-check"
+            label="Editar"
+          ></Button>
+          <Button
+            onClick={(e) => {
+              confirmPopup({
+                message: "Confirma a exclusão desse registro",
+                acceptLabel: "Sim",
+                rejectLabel: "Não",
+                accept: () => deletar(registro),
+              });
+            }}
+            icon="pi pi-times"
+            label="Deletar"
+            className="p-button-danger p-button-outlined p-button-rounded"
+          ></Button>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -78,26 +120,25 @@ export default function ListagemClientes(props: ListagemClientesProps) {
           </div>
         </div>
       </form>
-      <div className="columns">
-        <div className="is-full">
-          <DataTable
-            value={clientes.content}
-            totalRecords={clientes.totalElements}
-            lazy
-            paginator
-            first={clientes.first}
-            rows={clientes.size}
-            onPage={handlePage}
-            loading={loading}
-            emptyMessage="Nenhum registro."
-          >
-            <Column field="id" header="Código" />
-            <Column field="nome" header="Nome" />
-            <Column field="cpf" header="CPF" />
-            <Column field="email" header="E-mail" />
-          </DataTable>
-        </div>
-      </div>
+      <br />
+
+      <DataTable
+        value={clientes.content}
+        totalRecords={clientes.totalElements}
+        lazy
+        paginator
+        first={clientes.first}
+        rows={clientes.size}
+        onPage={handlePage}
+        loading={loading}
+        emptyMessage="Nenhum registro."
+      >
+        <Column field="id" header="Código" />
+        <Column field="nome" header="Nome" />
+        <Column field="cpf" header="CPF" />
+        <Column field="email" header="E-mail" />
+        <Column body={actionTemplate} />
+      </DataTable>
     </Layout>
   );
 }
