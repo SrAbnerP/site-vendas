@@ -8,7 +8,7 @@ export default function Menu(props: any) {
         <MenuItem href="/" label="Home" />
         <MenuItem href="/consultas/produtos" label="Produtos" />
         <MenuItem href="/consultas/clientes" label="Clientes" />
-        <MenuItem href="/" label="Config" />
+        <MenuItem href="/vendas/nova-venda" label="Vendas" />
         <MenuItem href="/" label="Sair" />
       </ul>
     </aside>

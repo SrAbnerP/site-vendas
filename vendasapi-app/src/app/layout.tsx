@@ -9,6 +9,8 @@ import "primereact/resources/themes/md-light-indigo/theme.css";
 //core
 import "primereact/resources/primereact.min.css";
 
+import "primeflex/primeflex.css";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
