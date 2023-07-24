@@ -12,6 +12,7 @@ import { Page } from "@/models/pagina";
 import { Cliente } from "@/models/cliente";
 import { useClienteService } from "@/services/clienteService";
 import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
 
 interface VendasFormProps {
   onSubmit: (venda: Venda) => void;
@@ -27,6 +28,7 @@ const formScheme: Venda = {
 export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
   const clienteService = useClienteService();
 
+  const [codigoProduto, setCodigoProduto] = useState<string>("");
   const [listaClientes, setListaClientes] = useState<Page<Cliente>>({
     content: [],
     first: 0,
@@ -53,6 +55,10 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
     formik.setFieldValue("cliente", cliente);
   };
 
+  const handleCodigoProdutoChange = (e: any) => {
+    console.log(codigoProduto);
+  };
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="p-fluid">
@@ -68,7 +74,40 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
             onChange={handleClienteChange}
           />
         </div>
+
         <br />
+
+        <div className="formgrid grid">
+          <div className="field col-12 md:col-2">
+            <span className="p-float-label">
+              <InputText
+                id="codigoProduto"
+                onChange={(e) => setCodigoProduto(e.target.value)}
+                value={codigoProduto}
+                onBlur={handleCodigoProdutoChange}
+              />
+              <label htmlFor="codigoProduto">Código</label>
+            </span>
+          </div>
+
+          <div className="field col-12 md:col-6">
+            <AutoComplete />
+          </div>
+
+          <div className="field col-12 md:col-2">
+            <span className="p-float-label">
+              <InputText id="qtdProduto" />
+              <label htmlFor="qtdProduto">QTD</label>
+            </span>
+          </div>
+
+          <div className="field col-12 md:col-2">
+            <Button label="Adicionar" />
+          </div>
+        </div>
+
+        <br />
+
         <Button type="submit" label="Finalizar" />
       </div>
     </form>
