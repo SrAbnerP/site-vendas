@@ -23,6 +23,8 @@ import { Produto } from "@/models/produto";
 import { Page } from "@/models/pagina";
 import { Cliente } from "@/models/cliente";
 
+import { validationScheme } from "./validationScheme";
+
 const formatadorMoney: any = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
@@ -63,6 +65,7 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
   const formik = useFormik<Venda>({
     onSubmit,
     initialValues: formScheme,
+    validationSchema: validationScheme,
   });
 
   const handleClienteAutoComplete = (e: AutoCompleteCompleteEvent) => {
@@ -160,10 +163,11 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
   };
 
   const totalColumn = (iv: ItemVenda) => {
-    const total = iv.produto.preco * iv.quantidade;
-    const totalFormatado = formatadorMoney.format(total);
-
-    return <div>{totalFormatado}</div>;
+    if (iv.produto && iv.produto.preco !== undefined) {
+      const total = iv.produto.preco * iv.quantidade;
+      const totalFormatado = formatadorMoney.format(total);
+      return <div>{totalFormatado}</div>;
+    }
   };
 
   return (
@@ -180,6 +184,7 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
             suggestions={listaClientes.content}
             onChange={handleClienteChange}
           />
+          <small className="p-error p-d-block">{formik.errors.cliente}</small>
         </div>
 
         <br />
@@ -241,6 +246,9 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
               <Column field="quantidade" header="QTD" />
               <Column body={totalColumn} header="Total" />
             </DataTable>
+            <small className="p-error p-d-block">
+              {formik.touched && formik.errors.itens}
+            </small>
           </div>
 
           <br />
@@ -257,6 +265,9 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
                 }
                 placeholder="Selecione..."
               />
+              <small className="p-error p-d-block">
+                {formik.errors.formaPagamento}
+              </small>
             </div>
           </div>
 
