@@ -1,18 +1,26 @@
 import React, { useState } from "react";
 
 import { useFormik } from "formik";
-import { Venda } from "@/models/venda";
+import { ItemVenda, Venda } from "@/models/venda";
 
 import {
   AutoComplete,
   AutoCompleteChangeEvent,
   AutoCompleteCompleteEvent,
 } from "primereact/autocomplete";
-import { Page } from "@/models/pagina";
-import { Cliente } from "@/models/cliente";
-import { useClienteService } from "@/services/clienteService";
+
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Dialog } from "primereact/dialog";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+
+import { useClienteService } from "@/services/clienteService";
+import { useProdutoService } from "@/services/produtoService";
+
+import { Produto } from "@/models/produto";
+import { Page } from "@/models/pagina";
+import { Cliente } from "@/models/cliente";
 
 interface VendasFormProps {
   onSubmit: (venda: Venda) => void;
@@ -20,15 +28,19 @@ interface VendasFormProps {
 
 const formScheme: Venda = {
   cliente: null,
-  produtos: [],
+  itens: [],
   total: 0,
   formaPagamento: "",
 };
 
 export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
   const clienteService = useClienteService();
+  const produtoService = useProdutoService();
 
+  const [mensagem, setMensagem] = useState<string>("");
+  const [quantidadeProduto, setQuantidadeProduto] = useState<number>(0);
   const [codigoProduto, setCodigoProduto] = useState<string>("");
+  const [produto, setProduto] = useState<Produto>({});
   const [listaClientes, setListaClientes] = useState<Page<Cliente>>({
     content: [],
     first: 0,
@@ -56,7 +68,55 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
   };
 
   const handleCodigoProdutoChange = (e: any) => {
-    console.log(codigoProduto);
+    if (codigoProduto) {
+      produtoService
+        .carregarProduto(codigoProduto)
+        .then((produto) => setProduto(produto))
+        .catch((error) => setMensagem("Produto não encontrado!"));
+    }
+  };
+
+  const handleAddProduto = () => {
+    const itensAdd = formik.values.itens;
+
+    const existsItem = itensAdd?.some((iv: ItemVenda) => {
+      return iv.produto.id === produto.id;
+    });
+
+    if (existsItem) {
+      itensAdd?.forEach((iv: ItemVenda) => {
+        if (iv.produto.id === produto.id) {
+          iv.quantidade = iv.quantidade + quantidadeProduto;
+        }
+      });
+    } else {
+      itensAdd?.push({
+        produto: produto,
+        quantidade: quantidadeProduto,
+      });
+    }
+
+    setProduto({});
+    setCodigoProduto("");
+    setQuantidadeProduto(0);
+  };
+
+  const handleFecharDialog = () => {
+    setMensagem("");
+    setCodigoProduto("");
+    setProduto({});
+  };
+
+  const dialogMensagemFooter = () => {
+    return (
+      <div>
+        <Button label="Ok" onClick={handleFecharDialog} />
+      </div>
+    );
+  };
+
+  const disabledAddProdutoButton = () => {
+    return !produto || !quantidadeProduto;
   };
 
   return (
@@ -91,18 +151,43 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
           </div>
 
           <div className="field col-12 md:col-6">
-            <AutoComplete />
+            <AutoComplete value={produto.nome} field="nome" />
           </div>
 
           <div className="field col-12 md:col-2">
             <span className="p-float-label">
-              <InputText id="qtdProduto" />
+              <InputText
+                id="qtdProduto"
+                value={quantidadeProduto.toString()}
+                onChange={(e) => setQuantidadeProduto(parseInt(e.target.value))}
+              />
               <label htmlFor="qtdProduto">QTD</label>
             </span>
           </div>
 
           <div className="field col-12 md:col-2">
-            <Button label="Adicionar" />
+            <Button
+              type="button"
+              disabled={disabledAddProdutoButton()}
+              label="Adicionar"
+              onClick={handleAddProduto}
+            />
+          </div>
+
+          <div className="col-12">
+            <DataTable value={formik.values.itens}>
+              <Column field="produto.id" header="Código" />
+              <Column field="produto.sku" header="SKU" />
+              <Column field="produto.nome" header="Produto" />
+              <Column field="produto.preco" header="Valor Unitário" />
+              <Column field="quantidade" header="QTD" />
+              <Column
+                body={(iv: ItemVenda) =>
+                  iv.produto.preco ? iv.produto.preco * iv.quantidade : ""
+                }
+                header="Total"
+              />
+            </DataTable>
           </div>
         </div>
 
@@ -110,6 +195,15 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
 
         <Button type="submit" label="Finalizar" />
       </div>
+      <Dialog
+        header="Atenção!"
+        position="top"
+        visible={!!mensagem}
+        onHide={handleFecharDialog}
+        footer={dialogMensagemFooter}
+      >
+        {mensagem}
+      </Dialog>
     </form>
   );
 };
