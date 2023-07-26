@@ -2,6 +2,7 @@ package com.abner.vendasapi.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -10,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
@@ -36,6 +38,9 @@ public class Produto {
 	@Column
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataCadastro;
+
+	@OneToMany(mappedBy = "produto")
+	private List<ItemVenda> itens;
 
 	public Produto() {
 		super();

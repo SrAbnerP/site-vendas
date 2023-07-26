@@ -1,12 +1,14 @@
 package com.abner.vendasapi.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
@@ -23,6 +25,9 @@ public class Cliente {
 	private String endereco;
 	private String telefone;
 	private String email;
+
+	@OneToMany(mappedBy = "cliente")
+	private List<Venda> vendas;
 
 	@Column(name = "data_cadastro")
 	private LocalDate dataCadastro;
