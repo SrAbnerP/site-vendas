@@ -239,6 +239,20 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
               value={formik.values.itens}
               emptyMessage="Nenhum produto adicionado."
             >
+              <Column
+                body={(item: ItemVenda) => {
+                  const handleRemoverItem = () => {
+                    const novaLista = formik.values.itens?.filter(
+                      (iv) => iv.produto.id !== item.produto.id
+                    );
+                    formik.setFieldValue("itens", novaLista);
+                  };
+
+                  return <Button label="Excluir" onClick={handleRemoverItem} />;
+                }}
+                field="produto.id"
+                header="Código"
+              />
               <Column field="produto.id" header="Código" />
               <Column field="produto.sku" header="SKU" />
               <Column field="produto.nome" header="Produto" />
