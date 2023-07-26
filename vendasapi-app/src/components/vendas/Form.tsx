@@ -14,6 +14,7 @@ import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { Dropdown } from "primereact/dropdown";
 
 import { useClienteService } from "@/services/clienteService";
 import { useProdutoService } from "@/services/produtoService";
@@ -21,6 +22,11 @@ import { useProdutoService } from "@/services/produtoService";
 import { Produto } from "@/models/produto";
 import { Page } from "@/models/pagina";
 import { Cliente } from "@/models/cliente";
+
+const formatadorMoney: any = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
 
 interface VendasFormProps {
   onSubmit: (venda: Venda) => void;
@@ -36,6 +42,8 @@ const formScheme: Venda = {
 export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
   const clienteService = useClienteService();
   const produtoService = useProdutoService();
+
+  const formasPagamento: String[] = ["DINHEIRO", "CARTAO"];
 
   const [mensagem, setMensagem] = useState<string>("");
   const [quantidadeProduto, setQuantidadeProduto] = useState<number>(0);
@@ -101,6 +109,9 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
     setProduto({});
     setCodigoProduto("");
     setQuantidadeProduto(0);
+
+    const total = totalVenda();
+    formik.setFieldValue("total", total);
   };
 
   const handleFecharDialog = () => {
@@ -132,6 +143,27 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
 
   const disabledAddProdutoButton = () => {
     return !produto || !quantidadeProduto;
+  };
+
+  const totalVenda = () => {
+    const totais: number[] = formik.values.itens?.map(
+      (iv) => iv.quantidade * iv.produto.preco
+    );
+
+    if (totais.length) {
+      return totais.reduce(
+        (somatoriaAtual = 0, valorItemAtual) => somatoriaAtual + valorItemAtual
+      );
+    } else {
+      return 0;
+    }
+  };
+
+  const totalColumn = (iv: ItemVenda) => {
+    const total = iv.produto.preco * iv.quantidade;
+    const totalFormatado = formatadorMoney.format(total);
+
+    return <div>{totalFormatado}</div>;
   };
 
   return (
@@ -198,19 +230,54 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
           </div>
 
           <div className="col-12">
-            <DataTable value={formik.values.itens}>
+            <DataTable
+              value={formik.values.itens}
+              emptyMessage="Nenhum produto adicionado."
+            >
               <Column field="produto.id" header="Código" />
               <Column field="produto.sku" header="SKU" />
               <Column field="produto.nome" header="Produto" />
               <Column field="produto.preco" header="Valor Unitário" />
               <Column field="quantidade" header="QTD" />
-              <Column
-                body={(iv: ItemVenda) =>
-                  iv.produto.preco ? iv.produto.preco * iv.quantidade : ""
-                }
-                header="Total"
-              />
+              <Column body={totalColumn} header="Total" />
             </DataTable>
+          </div>
+
+          <br />
+
+          <div className="col-5">
+            <div className="field">
+              <label htmlFor="formaPagamento">Forma da Pagamento: *</label>
+              <Dropdown
+                id="formaPagamento"
+                options={formasPagamento}
+                value={formik.values.formaPagamento}
+                onChange={(e) =>
+                  formik.setFieldValue("formaPagamento", e.value)
+                }
+                placeholder="Selecione..."
+              />
+            </div>
+          </div>
+
+          <div className="col-2">
+            <div className="field">
+              <label htmlFor="itens">Itens: </label>
+              <InputText
+                disabled
+                value={formik.values.itens?.length.toString()}
+              />
+            </div>
+          </div>
+
+          <div className="col-2">
+            <div className="field">
+              <label htmlFor="total">Total: </label>
+              <InputText
+                disabled
+                value={formatadorMoney.format(formik.values.total).toString()}
+              />
+            </div>
           </div>
         </div>
 
