@@ -39,6 +39,8 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
 
   const [mensagem, setMensagem] = useState<string>("");
   const [quantidadeProduto, setQuantidadeProduto] = useState<number>(0);
+  const [listaProdutos, setListaProdutos] = useState<Produto[]>([]);
+  const [listaProdutosFilter, setListaProdutosFilter] = useState<Produto[]>([]);
   const [codigoProduto, setCodigoProduto] = useState<string>("");
   const [produto, setProduto] = useState<Produto>({});
   const [listaClientes, setListaClientes] = useState<Page<Cliente>>({
@@ -107,6 +109,19 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
     setProduto({});
   };
 
+  const handleProdutoAutoComplete = async (e: AutoCompleteCompleteEvent) => {
+    if (!listaProdutos.length) {
+      const produtosEncontrados = await produtoService.listar();
+      setListaProdutos(produtosEncontrados);
+    }
+
+    const produtosEncontrados = listaProdutos.filter((produto: Produto) =>
+      produto.nome?.toUpperCase().includes(e.query.toUpperCase())
+    );
+
+    setListaProdutosFilter(produtosEncontrados);
+  };
+
   const dialogMensagemFooter = () => {
     return (
       <div>
@@ -151,7 +166,15 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
           </div>
 
           <div className="field col-12 md:col-6">
-            <AutoComplete value={produto.nome} field="nome" />
+            <AutoComplete
+              id="produto"
+              name="produto"
+              field="nome"
+              completeMethod={handleProdutoAutoComplete}
+              onChange={(e) => setProduto(e.target.value)}
+              suggestions={listaProdutosFilter}
+              value={produto.nome}
+            />
           </div>
 
           <div className="field col-12 md:col-2">
