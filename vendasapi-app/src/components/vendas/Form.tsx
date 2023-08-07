@@ -32,6 +32,8 @@ const formatadorMoney: any = new Intl.NumberFormat("pt-BR", {
 
 interface VendasFormProps {
   onSubmit: (venda: Venda) => void;
+  onNovaVenda: () => void;
+  vendaRealizada: boolean;
 }
 
 const formScheme: Venda = {
@@ -41,7 +43,11 @@ const formScheme: Venda = {
   formaPagamento: "",
 };
 
-export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
+export const VendasForm: React.FC<VendasFormProps> = ({
+  onSubmit,
+  onNovaVenda,
+  vendaRealizada,
+}) => {
   const clienteService = useClienteService();
   const produtoService = useProdutoService();
 
@@ -168,6 +174,13 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
       const totalFormatado = formatadorMoney.format(total);
       return <div>{totalFormatado}</div>;
     }
+  };
+
+  const realizarNovaVenda = () => {
+    onNovaVenda();
+    formik.resetForm();
+    formik.setFieldValue("itens", []);
+    formik.setFieldTouched("itens", false);
   };
 
   return (
@@ -308,7 +321,15 @@ export const VendasForm: React.FC<VendasFormProps> = ({ onSubmit }) => {
 
         <br />
 
-        <Button type="submit" label="Finalizar" />
+        {!vendaRealizada && <Button type="submit" label="Finalizar" />}
+        {vendaRealizada && (
+          <Button
+            className="p-button-success"
+            type="button"
+            label="Nova Venda"
+            onClick={realizarNovaVenda}
+          />
+        )}
       </div>
       <Dialog
         header="Atenção!"
